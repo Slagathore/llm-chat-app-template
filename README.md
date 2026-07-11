@@ -1,46 +1,32 @@
-# LLM Chat Application Template
+# LLM chat app template
 
-A simple, ready-to-deploy chat application template powered by Cloudflare Workers AI. This template provides a clean starting point for building AI chat applications with streaming responses.
+A small chat app that runs on Cloudflare Workers AI and streams the model's output back as it generates. Use it as a starting point for your own AI chat frontend.
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/llm-chat-app-template)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Slagathore/llm-chat-app-template)
 
-<!-- dash-content-start -->
+## What it does
 
-## Demo
+- Streams responses live over Server-Sent Events (SSE)
+- Model and system prompt both live in one file, so swapping them is quick
+- Works with AI Gateway if you want rate limiting, caching, or analytics
+- Plain HTML/CSS/JS frontend that keeps chat history on the client
+- Observability logging is on by default
 
-This template demonstrates how to build an AI-powered chat interface using Cloudflare Workers AI with streaming responses. It features:
-
-- Real-time streaming of AI responses using Server-Sent Events (SSE)
-- Easy customization of models and system prompts
-- Support for AI Gateway integration
-- Clean, responsive UI that works on mobile and desktop
-
-## Features
-
-- 💬 Simple and responsive chat interface
-- ⚡ Server-Sent Events (SSE) for streaming responses
-- 🧠 Powered by Cloudflare Workers AI LLMs
-- 🛠️ Built with TypeScript and Cloudflare Workers
-- 📱 Mobile-friendly design
-- 🔄 Maintains chat history on the client
-- 🔎 Built-in Observability logging
-<!-- dash-content-end -->
-
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18 or newer)
+- [Node.js](https://nodejs.org/) v18 or newer
 - [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
 - A Cloudflare account with Workers AI access
 
-### Installation
+### Install
 
-1. Clone this repository:
+1. Clone the repo:
 
    ```bash
-   git clone https://github.com/cloudflare/templates.git
-   cd templates/llm-chat-app
+   git clone https://github.com/Slagathore/llm-chat-app-template.git
+   cd llm-chat-app-template
    ```
 
 2. Install dependencies:
@@ -50,39 +36,38 @@ This template demonstrates how to build an AI-powered chat interface using Cloud
    ```
 
 3. Generate Worker type definitions:
+
    ```bash
    npm run cf-typegen
    ```
 
 ### Development
 
-Start a local development server:
+Start a local dev server:
 
 ```bash
 npm run dev
 ```
 
-This will start a local server at http://localhost:8787.
+It runs at http://localhost:8787.
 
-Note: Using Workers AI accesses your Cloudflare account even during local development, which will incur usage charges.
+Heads up: Workers AI hits your Cloudflare account even during local dev, so you get charged for usage.
 
-### Deployment
-
-Deploy to Cloudflare Workers:
+### Deploy
 
 ```bash
 npm run deploy
 ```
 
-### Monitor
+### Logs
 
-View real-time logs associated with any deployed Worker:
+Tail live logs from a deployed Worker:
 
 ```bash
 npm wrangler tail
 ```
 
-## Project Structure
+## Project structure
 
 ```
 /
@@ -98,56 +83,54 @@ npm wrangler tail
 └── README.md           # This documentation
 ```
 
-## How It Works
+## How it works
 
 ### Backend
 
-The backend is built with Cloudflare Workers and uses the Workers AI platform to generate responses. The main components are:
+A Cloudflare Worker that calls Workers AI to generate responses. The pieces:
 
-1. **API Endpoint** (`/api/chat`): Accepts POST requests with chat messages and streams responses
-2. **Streaming**: Uses Server-Sent Events (SSE) for real-time streaming of AI responses
-3. **Workers AI Binding**: Connects to Cloudflare's AI service via the Workers AI binding
+1. API endpoint (`/api/chat`): takes POST requests with chat messages and streams the reply
+2. Streaming over Server-Sent Events (SSE)
+3. Workers AI binding connects to Cloudflare's AI service
 
 ### Frontend
 
-The frontend is a simple HTML/CSS/JavaScript application that:
+Plain HTML/CSS/JS that:
 
-1. Presents a chat interface
-2. Sends user messages to the API
-3. Processes streaming responses in real-time
-4. Maintains chat history on the client side
+1. Shows the chat interface
+2. Sends messages to the API
+3. Reads the streamed response as it arrives
+4. Keeps chat history on the client
 
 ## Customization
 
-### Changing the Model
+### Change the model
 
-To use a different AI model, update the `MODEL_ID` constant in `src/index.ts`. You can find available models in the [Cloudflare Workers AI documentation](https://developers.cloudflare.com/workers-ai/models/).
+Update the `MODEL_ID` constant in `src/index.ts`. Available models are listed in the [Cloudflare Workers AI docs](https://developers.cloudflare.com/workers-ai/models/).
 
-### Using AI Gateway
+### Use AI Gateway
 
-The template includes commented code for AI Gateway integration, which provides additional capabilities like rate limiting, caching, and analytics.
-
-To enable AI Gateway:
+There's commented gateway code in `src/index.ts`. To turn it on:
 
 1. [Create an AI Gateway](https://dash.cloudflare.com/?to=/:account/ai/ai-gateway) in your Cloudflare dashboard
-2. Uncomment the gateway configuration in `src/index.ts`
-3. Replace `YOUR_GATEWAY_ID` with your actual AI Gateway ID
-4. Configure other gateway options as needed:
-   - `skipCache`: Set to `true` to bypass gateway caching
-   - `cacheTtl`: Set the cache time-to-live in seconds
+2. Uncomment the gateway config in `src/index.ts`
+3. Replace `YOUR_GATEWAY_ID` with your gateway ID
+4. Set the other options if you want them:
+   - `skipCache`: `true` to bypass the gateway cache
+   - `cacheTtl`: cache lifetime in seconds
 
-Learn more about [AI Gateway](https://developers.cloudflare.com/ai-gateway/).
+More on [AI Gateway](https://developers.cloudflare.com/ai-gateway/).
 
-### Modifying the System Prompt
+### Change the system prompt
 
-The default system prompt can be changed by updating the `SYSTEM_PROMPT` constant in `src/index.ts`.
+Edit the `SYSTEM_PROMPT` constant in `src/index.ts`.
 
 ### Styling
 
-The UI styling is contained in the `<style>` section of `public/index.html`. You can modify the CSS variables at the top to quickly change the color scheme.
+The CSS lives in the `<style>` block of `public/index.html`. Change the variables at the top to adjust the color scheme.
 
 ## Resources
 
-- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
-- [Cloudflare Workers AI Documentation](https://developers.cloudflare.com/workers-ai/)
-- [Workers AI Models](https://developers.cloudflare.com/workers-ai/models/)
+- [Cloudflare Workers docs](https://developers.cloudflare.com/workers/)
+- [Cloudflare Workers AI docs](https://developers.cloudflare.com/workers-ai/)
+- [Workers AI models](https://developers.cloudflare.com/workers-ai/models/)
